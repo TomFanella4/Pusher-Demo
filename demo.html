@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://js.pusher.com/platform/latest/pusher-platform.js"></script>
+    </head>
+    <body>
+        <script>
+            var app = new PusherPlatform.App({
+                appId: 'a153e230-132b-4d2e-9b76-65635c39f5e2',
+                });
+
+            var myFeed = app.feed('Names');
+
+            function subscribe() {
+                document.getElementById('list').innerHTML = '';
+                myFeed.subscribe({
+                  lastEventId: "0",
+                  onOpen: () => console.log('Connection established'),
+                  onItem: item => {
+                      console.log('Item:', item)
+                      var name = item.body.firstName + ' ' + item.body.lastName + '<br>';
+                      document.getElementById('list').innerHTML += name;
+                    },
+                  onError: error => console.error('Error:', error),
+                });
+            }
+
+            function append() {
+                myFeed.append('Hello, world!')
+                  .then(response => console.log('Success:', response))
+                  .catch(err => console.error('Error:', err));
+            }
+
+            function sendName() {
+                var fName = document.getElementById('firstName').value;
+                var lName = document.getElementById('lastName').value;
+
+                myFeed.append({firstName: fName, lastName: lName});
+            }
+
+        </script>
+
+    <h1>Pusher Test and Demo</h1>
+
+    <button type="button" onclick="subscribe()">Subscribe</button> <br><br>
+
+    First name: <input type="text" name="FirstName" id="firstName" ><br>
+    Last name: <input type="text" name="LastName"  id="lastName" ><br>
+    <input type="button" onclick="sendName()" value="Submit"> <br>
+
+    <h2> Names in the channel </h2>
+
+    <p id="list"> (Click subscribe to get the names) </>
+
+    </body>
+</html>
